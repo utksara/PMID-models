@@ -1,0 +1,32 @@
+clear all
+
+data;
+
+N = 10;
+M = 100;
+
+t = Time(1:N);
+Y = Temp(1:N)- mean(Temp(1:N));
+U = Suntime(1:M)- mean(Suntime(1:M));
+
+A = zeros(N-1,N-1+M);
+yfp = fliplr(Y);
+ufp = fliplr(U);
+
+for i = 1:N-1
+    A(i,N-i:N-1) = - yfp(N-i+1:N);
+    A(i,N+M-1-i:N+M-1) = ufp(M-i+1:N);
+end
+
+phi = A\Y(1:N-1);
+yp = A*phi;
+
+hold on
+plot(t(1:length(yp)),yp,'*');
+plot(t,Y);
+
+title('ARX model without input of Temperature');
+xlabel('time(hours)');
+ylabel('Temperature(deg C)')
+% text(300,36,'--- predicted output');
+% text(300,34,'____ actual output');
